@@ -1,41 +1,52 @@
 (function($) {
 	$.fn.cachesize = function(options) {
 		var containers = [];
-		var settings = {};
 		var supportsCanvas = (function() {
 			var elem = document.createElement('canvas');
 			return !!(elem.getContext && elem.getContext('2d'));
 		})();
+		
+		var settings = {
+			getSize: function() {
+				return {
+					width: window.innerWidth, 
+					height: window.innerHeight
+				};
+			}
+		};
 
 		$.extend(settings, options);
 		
-		var calculateRect = function(image) {
-			var width = window.innerWidth;
-			var height = window.innerHeight;
+		var calculateRect = function(image, size) {
 			var aspectRatio = image.width / image.height;
-			var lockVert = (width / aspectRatio) >= height;
+			var lockVert = (size.width / aspectRatio) >= size.height;
 			
 			var rect = {};
-			rect.width = lockVert ? width : height * aspectRatio;
-			rect.height = lockVert ? width / aspectRatio : height;
-			rect.left = lockVert ? 0 : Math.round((width - rect.width) / 2)
-			rect.top = lockVert ? Math.round((height - rect.height) / 2) : 0;
+			rect.width = lockVert ? size.width : size.height * aspectRatio;
+			rect.height = lockVert ? size.width / aspectRatio : size.height;
+			rect.left = lockVert ? 0 : Math.round((size.width - rect.width) / 2);
+			rect.top = lockVert ? Math.round((size.height - rect.height) / 2) : 0;
 
 			return rect;
 		}
 
 		var updateCanvas = function(canvas, original) {
-			var rect = calculateRect(original);
-			canvas.width = rect.width;
-			canvas.height = rect.height;
+			var size = settings.getSize();
+			var rect = calculateRect(original, size);
+			canvas.width = size.width;
+			canvas.height = size.height;
 			
 			var context = canvas.getContext('2d');
 			context.drawImage(original, rect.left, rect.top, Math.ceil(rect.width), Math.ceil(rect.height));
 		}
 		
-		var updateImage = function(image) {
-			var rect = calculateRect(image);
+		var updateImage = function(container) {
+			var image = container.data('image');
+			var size = settings.getSize();
+			var rect = calculateRect(image.get(0), size);
+
 			image.css(rect);
+			container.css({width: size.width, height: size.height});
 		}
 		
 		$(window).resize(function() {
@@ -43,14 +54,15 @@
 				var container = $(containers[i]);
 				
 				if (supportsCanvas) {
-					var canvas = container.data('canvas');
 					var original = container.data('original');
-					
+
 					if (original) {
+						var canvas = container.data('canvas');
 						updateCanvas(canvas, original);
 					}
 				} else {
-					updateImage(image);
+					var image = container.data('image');
+					updateImage(container);
 				}
 			}
 		});
@@ -75,9 +87,12 @@
 				
 				image.replaceWith(container);
 			} else {
-				container.data('original', image);
+				container.css('overflow', 'hidden');
+				container.data('image', image);
 				
-				image.wrap(container);
+				updateImage(container);
+				
+				container.insertAfter(image).wrapInner(image);
 			}
 			
 			containers.push(container.get(0));

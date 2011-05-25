@@ -22,7 +22,11 @@
 		
 		<script>
 			$(function() {
-				$('.slideshow img').cachesize().slideshow();
+				var result = $('.slideshow img').cachesize({
+					getSize: function() {
+						return {width: window.innerWidth >> 1, height: window.innerHeight}
+					}
+				}).slideshow();
 			});
 		</script>
 	</body>
