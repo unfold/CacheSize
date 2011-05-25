@@ -2,40 +2,42 @@
 	$.fn.cachesize = function(options) {
 		var images = $(this);
 
-		var canvas = $('<canvas/>').get(0);
-		var context = canvas.getContext('2d');
-
 		var settings = {
 			loaded: null
 		};
 		$.extend(settings, options);
 
-		var updateCanvasSize = function() {
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
-		};
+		var redrawCanvas = function(canvas, image) {
+			var aspectRatio = image.width / image.height;
+			var lockVert = (canvas.width / aspectRatio) >= canvas.height;
 
-		var getDataURL = function(image, width, height) {
-			var target = { width: image.width, height: image.height };
-
-			var aspectRatio = target.width / target.height;
-			var lockVert = (width / aspectRatio) >= height;
-
-			target.width = lockVert ? width : height * aspectRatio;
-			target.height = lockVert ? width / aspectRatio : height;
-			target.x = (lockVert ? 0 : Math.round((width - target.width) / 2));
-			target.y = (lockVert ? Math.round((height - target.height) / 2) : 0);
-
-			context.drawImage(image, target.x, target.y, Math.ceil(target.width), Math.ceil(target.height));
-			return canvas.toDataURL("image/jpeg");
-		};
+			image.width = lockVert ? canvas.width : canvas.height * aspectRatio;
+			image.height = lockVert ? canvas.width / aspectRatio : canvas.height;
+			image.x = (lockVert ? 0 : Math.round((canvas.width - image.width) / 2));
+			image.y = (lockVert ? Math.round((canvas.height - image.height) / 2) : 0);
+			
+			var context = canvas.getContext('2d');
+			context.drawImage(image, image.x, image.y, Math.ceil(image.width), Math.ceil(image.height));
+		}
 
 		var updateImage = function(image) {
-			image.attr('src', getDataURL(image.data('original'), canvas.width, canvas.height));
+			var canvas = image.data('canvas');
+
+			if (!canvas) {
+				canvas = $('<canvas />').get(0);
+
+				image.data('canvas', canvas);
+				image.after(canvas);
+				image.hide();
+			}
+			
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			
+			redrawCanvas(canvas, image.data('original'));
 		}
 
 		$(window).resize($.throttle(200, function() {
-			updateCanvasSize();
 			images.each(function(i) {
 				var image = $(this);
 				if(image.data('loaded')) {
@@ -43,8 +45,6 @@
 				}
 			});
 		}));
-
-		updateCanvasSize();
 
 		images.each(function() {
 			var image = $(this);

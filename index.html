@@ -10,10 +10,18 @@
 	</head>
 	<body>
 		<div class="slideshow original">
-			<img src="images/image-1.jpg" />
-			<img src="images/image-2.jpg" />
-			<img src="images/image-3.jpg" />
-			<img src="images/image-4.jpg" />
+			<div class="slide">
+				<img src="images/image-1.jpg" />
+			</div>
+			<div class="slide">
+				<img src="images/image-2.jpg" />
+			</div>
+			<div class="slide">
+				<img src="images/image-3.jpg" />
+			</div>
+			<div class="slide">
+				<img src="images/image-4.jpg" />
+			</div>
 		</div>
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -25,7 +33,8 @@
 			
 			
 			$(function() {
-				$('.slideshow img').cachesize().slideshow();
+				$('.slideshow img').cachesize();
+				$('.slideshow .slide').slideshow();
 			});
 		</script>
 	</body>
