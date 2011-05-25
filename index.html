@@ -1,0 +1,30 @@
+<!doctype html>
+
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Image resize cache</title>
+		
+		<link rel="stylesheet" href="main.css" />
+		
+	</head>
+	<body>
+		<div class="slideshow original">
+			<img src="images/image-1.jpg" />
+			<img src="images/image-2.jpg" />
+			<img src="images/image-3.jpg" />
+			<img src="images/image-4.jpg" />
+		</div>
+		
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="lib/jquery.ba-throttle-debounce.min.js"></script>
+		
+		<script>
+			
+			
+			$(function() {
+				$('.slideshow img').cacheSize().slideshow();
+			});
+		</script>
+	</body>
+</html>

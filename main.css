@@ -1,0 +1,18 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.slideshow {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.slideshow img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: block;
+}
