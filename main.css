@@ -10,7 +10,7 @@ html, body {
 	left: 0;
 }
 
-.slideshow * {
+.slideshow div {
 	position: absolute;
 	left: 0;
 	top: 0;

@@ -24,7 +24,7 @@
 			$(function() {
 				var result = $('.slideshow img').cachesize({
 					getSize: function() {
-						return {width: window.innerWidth >> 1, height: window.innerHeight}
+						return {width: $(window).width() >> 1, height: $(window).height()}
 					}
 				}).slideshow();
 			});

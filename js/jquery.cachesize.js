@@ -9,8 +9,8 @@
 		var settings = {
 			getSize: function() {
 				return {
-					width: window.innerWidth, 
-					height: window.innerHeight
+					width: $(window).width(), 
+					height: $(window).height()
 				};
 			}
 		};
@@ -89,10 +89,10 @@
 			} else {
 				container.css('overflow', 'hidden');
 				container.data('image', image);
+				container.insertAfter(image);
+				container.append(image);
 				
 				updateImage(container);
-				
-				container.insertAfter(image).wrapInner(image);
 			}
 			
 			containers.push(container.get(0));
