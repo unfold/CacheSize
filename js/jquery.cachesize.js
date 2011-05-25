@@ -1,64 +1,53 @@
 (function($) {
 	$.fn.cachesize = function(options) {
-		var images = $(this);
+		var canvases = [];
+		var settings = {};
 
-		var settings = {
-			loaded: null
-		};
 		$.extend(settings, options);
 
-		var redrawCanvas = function(canvas, image) {
-			var aspectRatio = image.width / image.height;
-			var lockVert = (canvas.width / aspectRatio) >= canvas.height;
-
-			image.width = lockVert ? canvas.width : canvas.height * aspectRatio;
-			image.height = lockVert ? canvas.width / aspectRatio : canvas.height;
-			image.x = (lockVert ? 0 : Math.round((canvas.width - image.width) / 2));
-			image.y = (lockVert ? Math.round((canvas.height - image.height) / 2) : 0);
-			
-			var context = canvas.getContext('2d');
-			context.drawImage(image, image.x, image.y, Math.ceil(image.width), Math.ceil(image.height));
-		}
-
-		var updateImage = function(image) {
-			var canvas = image.data('canvas');
-
-			if (!canvas) {
-				canvas = $('<canvas />').get(0);
-
-				image.data('canvas', canvas);
-				image.after(canvas);
-				image.hide();
-			}
-			
+		var redraw = function(canvas, image) {
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
+
+			var aspectRatio = image.width / image.height;
+			var lockVert = (canvas.width / aspectRatio) >= canvas.height;
+			var width = lockVert ? canvas.width : canvas.height * aspectRatio;
+			var height = lockVert ? canvas.width / aspectRatio : canvas.height;
+			var x = (lockVert ? 0 : Math.round((canvas.width - width) / 2));
+			var y = (lockVert ? Math.round((canvas.height - height) / 2) : 0);
 			
-			redrawCanvas(canvas, image.data('original'));
+			var context = canvas.getContext('2d');
+			context.drawImage(image, x, y, Math.ceil(width), Math.ceil(height));
 		}
+		
 
-		$(window).resize($.throttle(200, function() {
-			images.each(function(i) {
-				var image = $(this);
-				if(image.data('loaded')) {
-					updateImage(image);
+		$(window).resize(function() {
+			for (var i in canvases) {
+				var canvas = canvases[i];
+				var original = canvas.data('original');
+
+				if (original) {
+					redraw(canvas.get(0), original);
 				}
-			});
-		}));
+			}
+		});
 
-		images.each(function() {
+		$(this).each(function() {
 			var image = $(this);
+			var canvas = $('<canvas />');
 			var original = new Image();
 
 			original.onload = function() {
-				image.data('loaded', true);
-				updateImage(image);
+				canvas.data('original', original);
+				redraw(canvas.get(0), original);
 			}
 
-			original.src = $(this).attr('src');
-			$(this).data('original', original);
+			original.src = image.attr('src');
+			image.replaceWith(canvas);
+			
+			canvases.push(canvas);
 		});
-
-		return images;
+		
+		return $(canvases);
 	};
 })(jQuery);
