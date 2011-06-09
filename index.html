@@ -9,7 +9,7 @@
 		
 	</head>
 	<body>
-		<div class="slideshow original">
+		<div class="slideshow">
 			<img src="images/image-1.jpg" />
 			<img src="images/image-2.jpg" />
 			<img src="images/image-3.jpg" />
@@ -24,7 +24,7 @@
 			$(function() {
 				var result = $('.slideshow img').cachesize({
 					getSize: function() {
-						return {width: $(window).width() >> 1, height: $(window).height()}
+						return {width: $(window).width(), height: $(window).height()}
 					}
 				}).slideshow();
 			});

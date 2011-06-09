@@ -12,7 +12,9 @@
 					width: $(window).width(), 
 					height: $(window).height()
 				};
-			}
+			},
+			updateCallback: function() {},
+			msInterpolationMode: 'nearest-neighbor'
 		};
 
 		$.extend(settings, options);
@@ -38,6 +40,8 @@
 			
 			var context = canvas.getContext('2d');
 			context.drawImage(original, rect.left, rect.top, Math.ceil(rect.width), Math.ceil(rect.height));
+			
+			settings.updateCallback(size);
 		}
 		
 		var updateImage = function(container) {
@@ -47,6 +51,8 @@
 
 			image.css(rect);
 			container.css({width: size.width, height: size.height});
+			
+			settings.updateCallback(size);
 		}
 		
 		$(window).resize(function() {
@@ -79,7 +85,6 @@
 
 				original.onload = function() {
 					container.data('original', original);
-					
 					updateCanvas(canvas, original);
 				}
 				
@@ -87,6 +92,8 @@
 				
 				image.replaceWith(container);
 			} else {
+				image.css('position', 'absolute');
+				
 				container.css('overflow', 'hidden');
 				container.data('image', image);
 				container.insertAfter(image);

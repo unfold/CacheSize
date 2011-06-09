@@ -9,10 +9,3 @@ html, body {
 	top: 0;
 	left: 0;
 }
-
-.slideshow div {
-	position: absolute;
-	left: 0;
-	top: 0;
-	display: block;
-}
