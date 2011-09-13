@@ -4,29 +4,26 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Image resize cache</title>
-		
+
 		<link rel="stylesheet" href="main.css" />
-		
+
 	</head>
 	<body>
 		<div class="slideshow">
-			<img src="images/image-1.jpg" />
-			<img src="images/image-2.jpg" />
-			<img src="images/image-3.jpg" />
-			<img src="images/image-4.jpg" />
+			<div class="image"><img src="images/image-1.jpg" /></div>
+			<div class="image"><img src="images/image-2.jpg" /></div>
+			<div class="image"><img src="images/image-3.jpg" /></div>
+			<div class="image"><img src="images/image-4.jpg" /></div>
 		</div>
-		
+
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 		<script src="js/jquery.slideshow.js"></script>
 		<script src="js/jquery.cachesize.js"></script>
-		
+
 		<script>
 			$(function() {
-				var result = $('.slideshow img').cachesize({
-					getSize: function() {
-						return {width: $(window).width(), height: $(window).height()}
-					}
-				}).slideshow();
+				var slides = $('.slideshow .image').slideshow();
+				var images = slides.find('img').cachesize();
 			});
 		</script>
 	</body>

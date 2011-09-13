@@ -41,7 +41,7 @@
 			var context = canvas.getContext('2d');
 			context.drawImage(original, rect.left, rect.top, Math.ceil(rect.width), Math.ceil(rect.height));
 			
-			settings.updateCallback(size);
+			settings.updateCallback(size, rect);
 		}
 		
 		var updateImage = function(container) {
@@ -52,7 +52,7 @@
 			image.css(rect);
 			container.css({width: size.width, height: size.height});
 			
-			settings.updateCallback(size);
+			settings.updateCallback(size, rect);
 		}
 		
 		$(window).resize(function() {
