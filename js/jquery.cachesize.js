@@ -7,6 +7,8 @@
         })();
 
         var settings = {
+            className: '',
+            method: 'cover',
             getSize: function() {
                 return {
                     width: $(window).width(),
@@ -23,6 +25,8 @@
             var aspectRatio = image.width / image.height;
             var lockVert = (size.width / aspectRatio) >= size.height;
 
+            if(settings.method == 'contain') lockVert = !lockVert;
+
             var rect = {};
             rect.width = lockVert ? size.width : size.height * aspectRatio;
             rect.height = lockVert ? size.width / aspectRatio : size.height;
@@ -30,7 +34,7 @@
             rect.top = lockVert ? Math.round((size.height - rect.height) / 2) : 0;
 
             return rect;
-        }
+        };
 
         var updateCanvas = function(canvas, original) {
             var size = settings.getSize();
@@ -42,7 +46,7 @@
             context.drawImage(original, rect.left, rect.top, Math.ceil(rect.width), Math.ceil(rect.height));
 
             settings.updateCallback(size, rect);
-        }
+        };
 
         var updateImage = function(container) {
             var image = container.data('image');
@@ -53,7 +57,7 @@
             container.css({width: size.width, height: size.height});
 
             settings.updateCallback(size, rect);
-        }
+        };
 
         $(window).resize(function() {
             for (var i in containers) {
@@ -66,7 +70,7 @@
                         var canvas = container.data('canvas');
                         updateCanvas(canvas, original);
                     }
-                } else {
+                } else {
                     var image = container.data('image');
                     updateImage(container);
                 }
@@ -77,6 +81,8 @@
             var image = $(this);
             var container = $('<div />');
 
+            container.addClass(settings.className);
+
             if (supportsCanvas) {
                 var canvas = $('<canvas />').appendTo(container).get(0);
                 var original = new Image();
@@ -86,7 +92,7 @@
                 original.onload = function() {
                     container.data('original', original);
                     updateCanvas(canvas, original);
-                }
+                };
 
                 original.src = image.attr('src');
 
